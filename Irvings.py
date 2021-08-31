@@ -8,14 +8,14 @@ import random
 import json
 
 # These are used to Turn on or off the debugging print statments for various methods
-debugg1 = False # Phase One
-debugg2 = False # Find
-debugg3 = False # Seek
+debugg1 = True # Phase One
+debugg2 = True # Find
+debugg3 = True # Seek
 debugg4 = False # Phase Two
-debugg5 = False # Odd Number 
-debugg6 = False # Generation
-debugg7 = False # Load File
-debugg8 = False # RoommatesFalse
+debugg5 = True # Odd Number 
+debugg6 = True # Generation
+debugg7 = True # Load File
+debugg8 = True # RoommatesFalse
 
 
 # Variables and Lists Used in the program
@@ -45,28 +45,31 @@ preference = []                 # Preference is a Matrix of Player IDs based on 
 
 def phaseOne():
         if debugg1:
-                print "====================Phase One================="
+                print ("====================Phase One=================")
         global leftmost
         global rightmost
         global ranking
         global n
         global nextChoice
         set_proposed_to = []
+        proposer = 0
         for person in range(1,n+1):
                 proposer = person
+                
+                print(proposer)
                 while True:
                         nextChoice = preference[proposer][leftmost[proposer]]
                         current = preference[nextChoice][rightmost[nextChoice]]
                         if debugg1:
-                                print "next choice",nextChoice
-                                print "proposer",proposer
-                                print "current",current
-                                print "Rank NC P",ranking[nextChoice][proposer],"vs","Rank NC C",ranking[nextChoice][current]
+                                print ("next choice",nextChoice)
+                                print ("proposer",proposer)
+                                print ("current",current)
+                                print ("Rank NC P",ranking[nextChoice][proposer],"vs","Rank NC C",ranking[nextChoice][current])
                                 print
                         while ranking[nextChoice][proposer] >= ranking[nextChoice][current]:
                                 leftmost[proposer] = leftmost[proposer]+1
                                 if debugg1:
-                                        print leftmost
+                                        print (leftmost)
                                 nextChoice = preference[proposer][leftmost[proposer]]
                                 current = preference[nextChoice][rightmost[nextChoice]]
                         rightmost[nextChoice] = ranking[nextChoice][proposer]
@@ -75,9 +78,10 @@ def phaseOne():
                                 break
                 set_proposed_to.append(nextChoice)
         global soln_possible
-        soln_possible = proposer == nextChoice
+        soln_possible =  proposer == nextChoice
+        
         if debugg1:
-                print "=================================================="
+                print ("==================================================")
  
 #               
 # Find moved though Left and Rightmost to find the First unmatched 
@@ -86,16 +90,16 @@ def phaseOne():
 
 def find():
         if debugg2:
-                print "=================Find================="
+                print ("=================Find=================")
         global leftmost
         global rightmost
         global firstUnmatched
         while (leftmost[firstUnmatched] == rightmost[firstUnmatched]):
                 firstUnmatched = firstUnmatched + 1
                 if debugg2:
-                        print "firstUnmatched",firstUnmatched
+                        print ("firstUnmatched",firstUnmatched)
         if debugg2:
-                print "======================================"
+                print ("======================================")
 
 #
 # Seek searches out the next choice after a change has been made to the pairings has been made
@@ -104,7 +108,7 @@ def find():
 
 def seek():
         if debugg3:
-                print"================Seek==================="
+                print("================Seek===================")
         global firstInCycle
         global firstUnmatched
         global tail
@@ -115,11 +119,11 @@ def seek():
         global ranking
         global n
         if debugg3:
-                print "FIC",firstInCycle
+                print ("FIC",firstInCycle)
                 print
         if(firstInCycle > 1):
                 if debugg3:
-                        print "firstInCycle",firstInCycle
+                        print ("firstInCycle",firstInCycle)
                 person = cycle[firstInCycle-1]
                 posnInCycle = firstInCycle-1
                 cycleSet = tail
@@ -128,31 +132,31 @@ def seek():
                 posnInCycle = 1
                 person = firstUnmatched
                 if debugg3:
-                        print "person fUn",person
+                        print ("person fUn",person)
                         print
         # This while loop cycles through the rightmost of 
         while True:
                 cycleSet.append(person)
                 if debugg3:
-                        print "posnInCycle",posnInCycle
+                        print ("posnInCycle",posnInCycle)
                         print
                 cycle[posnInCycle] = person
                 posnInCycle = posnInCycle + 1
                 pasInList = second[person]
                 if debugg3:
-                        print "SECOND",second
+                        print ("SECOND",second)
 
                 # Changes the Next Choice and checks its ranking against the right most choice of their right most choice
                 while True:
                         if debugg3:
-                                print "pasinlist",pasInList
-                                print "person",person
+                                print ("pasinlist",pasInList)
+                                print ("person",person)
                         nextChoice = preference[person][pasInList]
                         if debugg3:
-                                print "nextchoice",nextChoice
+                                print ("nextchoice",nextChoice)
                         pasInList = pasInList + 1
                         if debugg3:
-                                print "ranking",ranking[nextChoice][person],"<=","right",rightmost[nextChoice]
+                                print ("ranking",ranking[nextChoice][person],"<=","right",rightmost[nextChoice])
                         if(ranking[nextChoice][person] <= rightmost[nextChoice]):
                                 break
                         if(pasInList == n+1): # this keeps the loop from going past a usable range incase the previous condition is not met. 
@@ -160,8 +164,8 @@ def seek():
                 second[person] = pasInList - 1
                 person = preference[nextChoice][rightmost[nextChoice]]
                 if debugg3:
-                        print "//person//",person
-                        print "//cycleSet//",cycleSet
+                        print ("//person//",person)
+                        print ("//cycleSet//",cycleSet)
                         print 
                 if(person in cycleSet):
                         break
@@ -170,17 +174,17 @@ def seek():
         for x in cycleSet:
                 tail.append(x)
         if debugg3:
-                print "posnInCycle",posnInCycle
-                print "person",person
-                print "cycle post",cycle[posnInCycle]
-                print "posnInCycle",posnInCycle
+                print ("posnInCycle",posnInCycle)
+                print ("person",person)
+                print ("cycle post",cycle[posnInCycle])
+                print ("posnInCycle",posnInCycle)
                 print
         # this keeps the tail updated to what it needs to be for the Cycle to complete
         while True:
                 posnInCycle = posnInCycle - 1
                 if debugg3:
-                        print "cycle",cycle
-                        print "posInCycle",posnInCycle
+                        print ("cycle",cycle)
+                        print ("posInCycle",posnInCycle)
                         print
                 x= cycle[posnInCycle]
                 if x in tail:
@@ -189,7 +193,7 @@ def seek():
                         break
         firstInCycle = posnInCycle
         if debugg3:
-                print"==============================================="
+                print("===============================================")
 
 #
 # Phase Two reduces the the list of potential partners and shifts the lists accordinglly. 
@@ -197,7 +201,7 @@ def seek():
 
 def phaseTwo():
         if debugg4:
-                print "=====================Phase Two===================="
+                print ("=====================Phase Two====================")
         global second
         global cycle
         global leftmost
@@ -208,25 +212,25 @@ def phaseTwo():
         global soln_possible
         for rank in range(firstInCycle, lastInCycle + 1):
                 if debugg4:                        
-                        print "proposer",proposer
-                        print "cycle[rank]",cycle[rank]
-                        print "leftmost[proposer]",leftmost[proposer]
-                        print "second[proposer]",second[proposer]
-                        print "nextChoice",nextChoice
-                        print "preference[proposer][leftmost[proposer]]",preference[proposer][leftmost[proposer]]
-                        print "rightmost[nextChoice]",rightmost[nextChoice]
-                        print "ranking[nextChoice][proposer]",ranking[nextChoice][proposer]
+                        print ("proposer",proposer)
+                        print ("cycle[rank]",cycle[rank])
+                        print ("leftmost[proposer]",leftmost[proposer])
+                        print ("second[proposer]",second[proposer])
+                        print ("nextChoice",nextChoice)
+                        print ("preference[proposer][leftmost[proposer]]",preference[proposer][leftmost[proposer]])
+                        print ("rightmost[nextChoice]",rightmost[nextChoice])
+                        print ("ranking[nextChoice][proposer]",ranking[nextChoice][proposer])
                 proposer = cycle[rank]
                 leftmost[proposer] = second[proposer]
                 second[proposer] = leftmost[proposer] + 1
                 nextChoice = preference[proposer][leftmost[proposer]]
                 rightmost[nextChoice] = ranking[nextChoice][proposer]
                 if debugg4:
-                        print "proposer",proposer
-                        print "leftmost[proposer]",leftmost[proposer]
-                        print "second[proposer]",second[proposer]
-                        print "nextChoice",nextChoice
-                        print "rightmost[nextChoice]",rightmost[nextChoice]
+                        print ("proposer",proposer)
+                        print ("leftmost[proposer]",leftmost[proposer])
+                        print ("second[proposer]",second[proposer])
+                        print ("nextChoice",nextChoice)
+                        print ("rightmost[nextChoice]",rightmost[nextChoice])
 
         rank = firstInCycle
 
@@ -234,10 +238,10 @@ def phaseTwo():
                 proposer = cycle[rank]
                 soln_possible = leftmost[proposer] <= rightmost[proposer]
                 if debugg4:
-                        print "soln_possible =",soln_possible
+                        print ("soln_possible =",soln_possible)
                 rank = rank + 1
         if debugg4:
-                print "=================================================="
+                print ("==================================================")
 
 #
 # If the Data loaded in has an Odd number if people this method creates another person, 
@@ -247,7 +251,7 @@ def phaseTwo():
 def oddNumber():
         loadFromFile()
         if debugg5:
-                print "====================Odd Number======================="
+                print ("====================Odd Number=======================")
         global second
         global cycle
         global leftmost
@@ -256,29 +260,29 @@ def oddNumber():
         global ranking
         global n
         w = 0
-        if(n % 2 == 1):
-                n = n+1
-                preference[0].append(-1)
-                transferN1 = 0
-                transferN2 = 0
-                newPerson = n
-                test = []
-                x = 0
-                for x in range(1,n+1):
-                        test.append(x)
-                newpref = random.sample(test,n-1)
-                newpref.insert(0,-1)
-                newpref.append(-1)
-                preference.append(newpref)
-                player = 1
-                for player in range(1,n):
-                        transferP1 = random.randint(1,n-1)
-                        preference[player].insert(transferP1,n)
-                for w in range(0,n+1):
-                        if debugg5:
-                                print preference[w]
+        # if(n % 2 == 1):
+        #         n = n+1
+        #         preference[0].append(-1)
+        #         transferN1 = 0
+        #         transferN2 = 0
+        #         newPerson = n
+        #         test = []
+        #         x = 0
+        #         for x in range(1,n+1):
+        #                 test.append(x)
+        #         newpref = random.sample(test,n-1)
+        #         newpref.insert(0,-1)
+        #         newpref.append(-1)
+        #         preference.append(newpref)
+        #         player = 1
+        #         for player in range(1,n):
+        #                 transferP1 = random.randint(1,n-1)
+        #                 preference[player].insert(transferP1,n)
+        #         for w in range(0,n+1):
+        #                 if debugg5:
+        #                         print (preference[w])
         if debugg5:
-                print "====================================================="
+                print ("=====================================================")
 
 #
 # This fills the lists created at the begining with the appropreate amount of dumby spaces 
@@ -288,7 +292,7 @@ def oddNumber():
 def generation():
         oddNumber()
         if debugg6:
-                print "===================Generation========================"
+                print ("===================Generation========================")
         global second
         global cycle
         global leftmost
@@ -307,10 +311,10 @@ def generation():
                 rightmost.append(y)
                 y = y - 1
         if debugg6:
-                print "second",second
-                print "cycle",cycle
-                print "leftmost",leftmost
-                print "rightmost",rightmost
+                print ("second",second)
+                print ("cycle",cycle)
+                print ("leftmost",leftmost)
+                print ("rightmost",rightmost)
         ranks0 = []
         ranks1 =[]
         ranks1.append(0)
@@ -335,11 +339,11 @@ def generation():
                                         ranking[x][y] = -1
                 ranking[x][n] = 0
         if debugg6:
-                print "Ranking in Generation"                                
+                print ("Ranking in Generation")                              
                 for y in range(0,n+1):
-                        print ranking[y]
+                        print (ranking[y])
         if debugg6:
-                print "========================================================="
+                print ("=========================================================")
 
 #
 # This loads the Preferences from an external file and sets them to the preferences in this program
@@ -348,24 +352,24 @@ def generation():
 
 def loadFromFile():
         if debugg7:
-                print "===============Load From File============================"
+                print ("===============Load From File============================")
         global n
         global preference
-        with open('Players Skill Prefs.txt') as f:
-                preference = []
-                for line in f:
-                        line = line.split() # to deal with blank 
-                        if line:            # lines (ie skip them)
-                                line = [int(i) for i in line]
-                                preference.append(line)
-        n = len(preference) - 1
+        # with open('Players Skill Prefs.txt') as f:
+        #         preference = []
+        #         for line in f:
+        #                 line = line.split() # to deal with blank 
+        #                 if line:            # lines (ie skip them)
+        #                         line = [int(i) for i in line]
+        #                         preference.append(line)
+        n = len(preference) -1
         y = 0
         if debugg7:
-                print "before Odd Correction"
+                print ("before Odd Correction")
                 for y in range(0,n+1):
-                        print preference[y]
+                        print (preference[y])
         if debugg7:
-                print "========================================================="
+                print ("=========================================================")
 
 #
 # This is the creates the the actual values of the RAnking Matrix along with being the 'Main' that calls the other methods as needed. 
@@ -374,7 +378,7 @@ def loadFromFile():
 def roommates():
         generation()
         if debugg8:
-                print "==============Roommates===================="
+                print ("==============Roommates====================")
         global rank        
         global firstInCycle
         global firstUnmatched
@@ -385,18 +389,18 @@ def roommates():
         global ranking
         global n
         if debugg8:
-                print "preference"
+                print ("preference")
                 for n in range(0,n+1):
-                        print preference[n]
-                print "second",second
-                print "cycle",cycle
-                print "leftmost",leftmost
-                print "rightmost",rightmost
-                print "ranking"
+                        print (preference[n])
+                print ("second",second)
+                print ("cycle",cycle)
+                print ("leftmost",leftmost)
+                print ("rightmost",rightmost)
+                print ("ranking")
         y=0
         if debugg8:
                 for y in range(0,n+1):
-                        print ranking[y]
+                        print (ranking[y])
         solnFound = False
         firstUnmatched = 1
         firstInCycle = 1
@@ -411,42 +415,42 @@ def roommates():
         leftmost[n+1] = 1
         rightmost[n+1] = n 
         if debugg8:
-                print "Ranking"
+                print ("Ranking")
                 for y in range(0,n+1):
-                        print "rankings for#",y,ranking[y]
+                        print ("rankings for#",y,ranking[y])
                 print 
-                print "leftmost", leftmost
-                print "rightmost",rightmost
+                print ("leftmost", leftmost)
+                print ("rightmost",rightmost)
                 print 
         phaseOne()
         if debugg8:
-                print "soln_possible:",soln_possible
-                print "Leftmost",leftmost
-                print "rightmost",rightmost
+                print ("soln_possible:",soln_possible)
+                print ("Leftmost",leftmost)
+                print ("rightmost",rightmost)
                 print 
-                print "Ranking"
+                print ("Ranking")
                 for y in range(1,n+1):
-                        print ranking[y]
+                        print (ranking[y])
                 print
-                print "second",second
+                print ("second",second)
                 print 
         for person in range(1,n+1):
                 if debugg8:
-                        print "left",leftmost[person]
-                        print "left",leftmost[person]+1
-                        print "second",second[person]
+                        print ("left",leftmost[person])
+                        print ("left",leftmost[person]+1)
+                        print ("second",second[person])
                 second[person] = leftmost[person] +1
                 if debugg8:
-                        print "second v2",second[person]
+                        print ("second v2",second[person])
                         print
-        #opperates the three parts of "PHase Two" that reduce and re-assign pairings
+        #opperates the three parts of "PHase Two" that reduce and re-assign pairings 
         while(soln_possible and not solnFound):
                 if debugg8:
-                        print "FirstUnmatched before the call",firstUnmatched
+                        print ("FirstUnmatched before the call",firstUnmatched)
                 find()
                 if firstUnmatched > n:
                         solnFound = True
-                        print "SolnFound",solnFound
+                        print ("SolnFound",solnFound)
                 else:
                         seek()
                         phaseTwo()
@@ -468,13 +472,17 @@ def roommates():
                                 string3 = string1 + "," + string2 + "\n"
                                 f.write(string3)
                                 partner.append([person,roomie])
-                print "Partner",partner
+                print ("Partner",partner)
                 f.close()
         else:
-                print "<<<<<<<<<<No Solution>>>>>>>>>>"
+                print ("<<<<<<<<<<No Solution>>>>>>>>>>")
         if debugg8:
-                print "==========================================="
+                print ("===========================================")
+                
+#preference = [[0,1, 2, 3], [1,2, 0, 3,], [2,0, 1, 3], [3,0, 1, 3]]
+#preference = [[1,2],[2,1]]
 roommates()
+
 
 
 
